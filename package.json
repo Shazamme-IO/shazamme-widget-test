@@ -1,0 +1,7 @@
+{
+  "name": "shazamme-widget-test",
+  "version": "0.1.0",
+  "description": "Proof-of-concept: a single Duda widget served from an external, version-pinned repo via CDN.",
+  "private": true,
+  "files": ["widget.js", "widget.css"]
+}
