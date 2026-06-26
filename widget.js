@@ -77,6 +77,16 @@ function ShApi() {
             direction: 'desc',
         }) => new Promise( (resolve, reject) => {
             shazamme.fetch(Collection.job).then( jobs => {
+                // Defensive: shazamme.fetch normally resolves to an array of rows,
+                // but on some pages/collections it can resolve to a wrapper object
+                // or null. Without this guard, `jobs.filter(...)` below throws a
+                // TypeError that aborts main() and leaves the filters, proximity
+                // slider and view toggles uninitialised.
+                if (!Array.isArray(jobs)) {
+                    jobs = (jobs && (jobs.values || jobs.rows || jobs.data)) || [];
+                }
+                if (!Array.isArray(jobs)) jobs = [];
+
                 let filtered = [];
 
                 if (data.config.catchAllFilter && data.config.catchAllProfession) {
