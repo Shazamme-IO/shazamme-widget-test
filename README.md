@@ -1,52 +1,47 @@
 # shazamme-widget-test
 
-Proof of concept for storing a Duda widget's HTML/CSS/JS **outside** Duda, in a
-version-controlled git repo, served via CDN and pinned per-site by version.
+Proof of concept: host a Duda custom widget's **JS controller** outside Duda, in
+a version-controlled git repo served via CDN, pinned per-site by version.
 
-The Duda site holds only a mount `<div>` + a loader snippet. Everything real
-(markup, styling, behaviour) lives here and is pinned to a git tag, so a change
-to one site can never touch another.
+Only the JS is externalised. The Duda custom widget keeps:
+- its **HTML template** (Handlebars, bound to the widget's settings panel), and
+- its **CSS** (base + device variants, applied by Duda's responsive engine).
 
-## Embed in ONE Duda widget
+Duda injects `element`, `data`, `$`, `shazamme` into the widget's JS scope;
+`widget.js` here is the full controller wrapped as
+`window.ShazammeJobWidget({ element, data, $, shazamme })` so it receives them.
 
-Drop an **HTML / Embed** widget on the page and paste this (pin to a tag):
+`_duda-source/widget.raw.js` is the pristine, unwrapped Duda source.
 
-```html
-<div data-shazamme-widget></div>
+## Duda JS box — replace ALL the JS with this version-pinned loader
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shazamme-IO/shazamme-widget-test@v0.1.0/widget.css">
-<script src="https://cdn.jsdelivr.net/gh/Shazamme-IO/shazamme-widget-test@v0.1.0/widget.js"></script>
+```js
+(function () {
+  var V = '0.2.0';
+  var src = 'https://cdn.jsdelivr.net/gh/Shazamme-IO/shazamme-widget-test@v' + V + '/widget.js';
+  function run() { window.ShazammeJobWidget({ element: element, data: data, $: $, shazamme: shazamme }); }
+  if (window.ShazammeJobWidget) run();
+  else { var s = document.createElement('script'); s.src = src; s.onload = run; document.head.appendChild(s); }
+})();
 ```
 
-The orange badge shows the loaded version — proof of which build is live.
+Leave the widget's HTML and CSS boxes untouched.
 
-## Ship a change (and prove versioning + rollback)
+## Ship a change (versioning + rollback)
 
 ```bash
-# edit widget.js / widget.css, bump VERSION in widget.js + package.json
-git commit -am "feat: tweak widget"
-git tag v0.1.1 && git push --tags
+# edit _duda-source/widget.raw.js, then re-wrap into widget.js, bump package.json
+git commit -am "feat: change controller"
+git tag v0.2.1 && git push --tags
 ```
+- **Roll forward:** change `V = '0.2.0'` → `'0.2.1'` in the one Duda widget.
+- **Roll back:** change it back. Old tags are immutable and still served.
 
-- **Roll forward:** change `@v0.1.0` → `@v0.1.1` in that one Duda widget.
-- **Roll back:** change it back. The old tagged build is immutable and still served.
-- No other site/widget moves unless you change its pinned tag.
-
-## While iterating (before you pin a tag)
-
-jsDelivr caches tagged URLs immutably. During authoring, point at a branch and
-purge the cache to see changes fast:
+## CDN URLs
 
 ```
-https://cdn.jsdelivr.net/gh/Shazamme-IO/shazamme-widget-test@main/widget.js
-# force-refresh the CDN copy after a push:
-https://purge.jsdelivr.net/gh/Shazamme-IO/shazamme-widget-test@main/widget.js
+https://cdn.jsdelivr.net/gh/Shazamme-IO/shazamme-widget-test@v0.2.0/widget.js   (prod CDN; ~5 min to index a new tag)
+https://raw.githack.com/Shazamme-IO/shazamme-widget-test/v0.2.0/widget.js        (instant, good for first test)
 ```
 
-Pin to a real tag (`@v0.1.0`) once you're happy — never ship `@main` to a live site.
-
-## Later: same scheme on sdk.shazamme.com
-
-This is identical to the production plan, just a different host. When ready,
-swap the CDN domain for `sdk.shazamme.com/sdk/v0.1.0/...` — the Duda side stays
-a pinned URL, so nothing about the approach changes.
+Later, the same `@version` scheme moves to `sdk.shazamme.com` — the Duda side stays a pinned URL, so nothing about the approach changes.

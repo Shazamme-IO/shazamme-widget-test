@@ -1,4 +1,3 @@
-window.ShazammeJobWidget = function ({ element, data, $, shazamme }) {
 const ActionUrl = 'https://shazamme.io/Job-Listing/src/php/actions';
 
 const Path = {
@@ -3111,4 +3110,3 @@ ux.loadScript('https://sdk.shazamme.io/js/shazamme-1.0.3.min.js')
 
 ux.loadScript('https://sdk.shazamme.io/plugin/lottie-files/lottie-player-2.0.8.js')
     .then();
-};
