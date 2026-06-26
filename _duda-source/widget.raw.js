@@ -3101,7 +3101,7 @@ ux.loadScript('https://sdk.shazamme.io/js/shazamme-1.0.3.min.js')
         }
 
         return Promise.all([
-            shazamme.style('https://sdk.shazamme.io/css/fontawesome/css/fontawesome.min.css>'),
+            shazamme.style('https://sdk.shazamme.io/css/fontawesome/css/fontawesome.min.css'),
             shazamme.style('https://sdk.shazamme.io/css/fontawesome/css/regular.min.css'),
             gApiPromise,
         ]);

@@ -1,6 +1,6 @@
 {
   "name": "shazamme-widget-test",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Externally-hosted, version-pinned Shazamme job-results widget. The JS controller lives here; the Duda custom widget keeps only its HTML template, CSS, and a version-pinned loader.",
   "private": false,
   "files": [
