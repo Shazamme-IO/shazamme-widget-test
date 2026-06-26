@@ -1,5 +1,4 @@
 window.ShazammeJobWidget = function ({ element, data, $, shazamme }) {
-  (function(){var id="shm-ext-fix";if(!document.getElementById(id)){var s=document.createElement("style");s.id=id;s.textContent="/* External overrides we own, injected by widget.js at runtime (versioned).\n   The pristine Duda source stays untouched in _duda-source/widget.raw.js. */\n\n/* v0.2.1 — Left filter nav changed width between List and Map view.\n   Cause: List view is tall enough to show the page scrollbar (~15px), so the\n   22% nav renders narrower; Map view is a fixed short height with no scrollbar,\n   so the page widens and the nav grows. Always reserve the scrollbar gutter so\n   the nav width is identical in both views (matches the List-view size). */\nhtml { overflow-y: scroll; scrollbar-gutter: stable; }\n";document.head.appendChild(s);}})();
 const ActionUrl = 'https://shazamme.io/Job-Listing/src/php/actions';
 
 const Path = {
@@ -77,16 +76,6 @@ function ShApi() {
             direction: 'desc',
         }) => new Promise( (resolve, reject) => {
             shazamme.fetch(Collection.job).then( jobs => {
-                // Defensive: shazamme.fetch normally resolves to an array of rows,
-                // but on some pages/collections it can resolve to a wrapper object
-                // or null. Without this guard, `jobs.filter(...)` below throws a
-                // TypeError that aborts main() and leaves the filters, proximity
-                // slider and view toggles uninitialised.
-                if (!Array.isArray(jobs)) {
-                    jobs = (jobs && (jobs.values || jobs.rows || jobs.data)) || [];
-                }
-                if (!Array.isArray(jobs)) jobs = [];
-
                 let filtered = [];
 
                 if (data.config.catchAllFilter && data.config.catchAllProfession) {
