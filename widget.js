@@ -1,4 +1,5 @@
 window.ShazammeJobWidget = function ({ element, data, $, shazamme }) {
+  (function(){var id="shm-ext-fix";if(!document.getElementById(id)){var s=document.createElement("style");s.id=id;s.textContent="/* External overrides we own, injected by widget.js at runtime (versioned).\n   The pristine Duda source stays untouched in _duda-source/widget.raw.js. */\n\n/* v0.2.1 — Left filter nav changed width between List and Map view.\n   Cause: List view is tall enough to show the page scrollbar (~15px), so the\n   22% nav renders narrower; Map view is a fixed short height with no scrollbar,\n   so the page widens and the nav grows. Always reserve the scrollbar gutter so\n   the nav width is identical in both views (matches the List-view size). */\nhtml { overflow-y: scroll; scrollbar-gutter: stable; }\n";document.head.appendChild(s);}})();
 const ActionUrl = 'https://shazamme.io/Job-Listing/src/php/actions';
 
 const Path = {

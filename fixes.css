@@ -1,0 +1,9 @@
+/* External overrides we own, injected by widget.js at runtime (versioned).
+   The pristine Duda source stays untouched in _duda-source/widget.raw.js. */
+
+/* v0.2.1 — Left filter nav changed width between List and Map view.
+   Cause: List view is tall enough to show the page scrollbar (~15px), so the
+   22% nav renders narrower; Map view is a fixed short height with no scrollbar,
+   so the page widens and the nav grows. Always reserve the scrollbar gutter so
+   the nav width is identical in both views (matches the List-view size). */
+html { overflow-y: scroll; scrollbar-gutter: stable; }
